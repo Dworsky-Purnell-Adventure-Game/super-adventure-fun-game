@@ -2,9 +2,14 @@ import java.util.Scanner;
 
 public class Adventure {
     public static void main (String[] args) {
+        int hp = 50;
+        int potions = 5; // 20 pts of health
+        String weapon = "";
+
+
         Scanner s = new Scanner(System.in);
 
-        // play game?
+        // START GAME
         System.out.println("Would you like to begin your adventure? [Yes/No]");
         String confirmation = s.next();
         s.nextLine();
@@ -14,64 +19,50 @@ public class Adventure {
             System.out.println("Adventure another day then.");
         }
 
-        // name
+        // HERO NAME
         System.out.println("What is your name, adventurer?");
         String userName = s.nextLine();
         System.out.printf("Welcome, %s.%n", userName);
 
-        // begin in dungeon
-        // decide which weapon to pick up
-        System.out.println("Having fought your way deep into the dungeon, you trusty sword has shattered. You see 2 rusty weapons - a shortsword and an axe - laying on the floor. Which do you pick up?");
+        // WEAPON SELECTION
+        System.out.println("You are in a dungeon with a broken weapon.");
+        System.out.println("Ahead of you lies a [S]hortsword and an [A]xe.");
+        System.out.println("Which weapon do you pick up?");
+        weapon = weaponSelection();
 
-        String weaponChoice = s.nextLine();
 
-        if (weaponChoice.contains("sword")) {
+        // GOBLIN ENCOUNTER
+        System.out.println("Ahead you encounter a goblin - what would you like to do?");
+        System.out.println("[A]ttack | [P]otion | [R]un");
+
+        String goblinEncounter = s.next();
+
+        if (goblinEncounter.equalsIgnoreCase("a")) {
+            System.out.println("Goblin | HP: 10");
+            System.out.println(userName + " | HP: 50");
+
+        }
+
+        // 2 ORC ENCOUNTER
+
+        // PEPE BOSS BATTLE
+
+    }
+
+    public static String weaponSelection() {
+        Scanner s = new Scanner(System.in);
+        String weaponChoice = s.next();
+
+        if (weaponChoice.equalsIgnoreCase("s")) {
             System.out.println("You pick up the sword.");
-        } else if (weaponChoice.contains("axe")) {
+            return "sword";
+
+        } else if (weaponChoice.equalsIgnoreCase("a")) {
             System.out.println("You pick up the axe");
+            return "axe";
         } else {
             System.out.println("You continue with no weapon.");
+            return "none";
         }
-
-        // continue down dungeon - roll dice to advance
-        System.out.println("You look ahead - the dungeon is dark. Leaving it to chance, you pull out your trusted 20-sided die to see how far to venture");
-        System.out.println("You roll to see how far you go [R]oll");
-
-        int heroDiceSides = s.nextInt();
-        double diceRoll = diceRoll(heroDiceSides);
-
-        if (diceRoll >= 5) {
-
-        } else if (diceRoll >= 10) {
-
-        } else if (diceRoll >= 15) {
-
-        } else {
-
-        }
-        // 5 different encounters to start - dice roll dictates which encounter happens
-        // end of dungeon - boss battle
-
-
-
-
     }
-
-    public static double diceRoll(int num) {
-        double diceRoll = (Math.random() * num) + 1;
-        return diceRoll;
-    }
-//        //Enemy 1 - Goblin
-//        public static int Goblin() {
-//
-//    }
-//
-//    public static int HeroStats() {
-//        int HP = 50;
-//        int Potions = 5; // 20 pts of health
-//        String Weapon = "";
-//
-//    }
-
-
 }
