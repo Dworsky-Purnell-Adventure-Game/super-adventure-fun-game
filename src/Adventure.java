@@ -1,8 +1,9 @@
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Adventure {
     public static void main(String[] args) throws InterruptedException {
+
+        Scanner s = new Scanner(System.in);
 
         // Hero Stats
         String heroName = "";
@@ -12,88 +13,85 @@ public class Adventure {
 
         // Goblin Stats
         int goblinHealth = 10;
-        int goblinAttack = 5;
+        int goblinAttack = (int) Math.floor(Math.random() * 4) + 1;
         String goblinWeapon = "Stick";
         String goblinName = "Urzal the Scared";
 
-        Scanner s = new Scanner(System.in);
 
         // START GAME
         System.out.println("Would you like to begin your adventure? [Yes/No]");
         String confirmation = s.next();
         s.nextLine();
+
+
         if (confirmation.equalsIgnoreCase("yes")) {
             System.out.println("Let's begin...");
-
 
             // HERO NAME
             System.out.println("What is your name, adventurer?");
             heroName = s.nextLine();
             System.out.printf("Welcome, %s.%n%n", heroName);
 
-            // INTRO - WEAPON SELECTION
+            // WEAPON SELECTION
             System.out.println("You are in a dungeon with no weapon.");
-            System.out.println("Ahead of you lies a [S]word and an [A]xe.\n");
-            System.out.println("Which weapon do you pick up?");
+            System.out.println("Ahead of you lies a [S]word and an [A]xe.");
+            System.out.println("\nWhich weapon do you pick up?");
             heroWeapon = weaponSelection();
-            System.out.print("You found: " + heroWeapon + "\n\n\n\n");
-
+            System.out.printf("You found: %s%n%n%n%n", heroWeapon);
+            Thread.sleep(2000);
 
             // GOBLIN ENCOUNTER
-            Thread.sleep(2000);
             System.out.println("Ahead you encounter a goblin - what would you like to do?\n");
             enemyStatus(goblinHealth, goblinWeapon, goblinName);
             playerStatus(heroHP, heroWeapon, heroName);
-            do {
-                System.out.printf("[A]ttack | [P]otion | [R]un%n");
 
+            // Loop through fight until one of the fighter's HP is 0
+            do {
+                System.out.println("[A]ttack | [P]otion | [R]un");
                 String goblinEncounter = s.next();
 
+                // Begin attack choice
                 if (goblinEncounter.equalsIgnoreCase("a")) {
+
                     int attackValue = attackValue(heroWeapon);
-                    // ENEMY STATS BAR
-                    System.out.printf("%nYou damage him by %d!%n", attackValue);
+
                     goblinHealth -= attackValue;
-                    enemyStatus(goblinHealth, goblinWeapon, goblinName);
-                    // PLAYER STATS BAR
-                    System.out.printf("%nThe goblin damages you by %d!%n", goblinAttack);
+                    System.out.printf("%nYou damage him by %d!%n", attackValue);
+                    enemyStatus(goblinHealth, goblinWeapon, goblinName); // enemy status bar
+
                     heroHP -= goblinAttack;
-                    playerStatus(heroHP, heroWeapon, heroName);
-                } else if (goblinEncounter.equalsIgnoreCase("p")) {
-                    // path if hero HP is at maximum
+                    System.out.printf("%nThe goblin damages you by %d!%n", goblinAttack);
+                    playerStatus(heroHP, heroWeapon, heroName); // player status bar
+
+                }
+
+                // Begin potion choice
+                else if (goblinEncounter.equalsIgnoreCase("p")) {
                     if (heroHP == 50) {
-                        //
                         System.out.println("\nAlready at full health! It had no effect!");
-                        enemyStatus(goblinHealth, goblinWeapon, goblinName);
-                        //
-                        System.out.printf("%nThe goblin damages you by %d!%n", goblinAttack);
-                        heroHP -= goblinAttack;
-                        playerStatus(heroHP, heroWeapon, heroName);
-                    // path if hero recovered HP
                     } else {
-                        // grab current hp value
                         int currentHP = heroHP;
-                        int recoveredHP = 0;
 
-                        // if adding 20 hp puts it above 50, reset heroHP to 50
-                        heroHP += 20;
-                        if (heroHP > 50) {
+                        if (heroHP >= 30) {
                             heroHP = 50;
-                        }
-                        // calculating correct display for recoveredHP
-                        if (heroHP - currentHP > 20) {
-                            recoveredHP = 20;
                         } else {
-                            recoveredHP = heroHP - currentHP;
+                            heroHP += 20;
                         }
-                        System.out.printf("%nYou recovered %d health!%n", recoveredHP);
-                        enemyStatus(goblinHealth, goblinWeapon, goblinName);
 
-                        System.out.printf("%nThe goblin damages you by %d!%n", goblinAttack);
-                        heroHP -= goblinAttack;
-                        playerStatus(heroHP, heroWeapon, heroName);
+                        int recoveredHP = heroHP - currentHP;
+
+                        System.out.printf("%nYou recovered %d health!%n", recoveredHP);
                     }
-                } else if (goblinEncounter.equalsIgnoreCase("r")) {
+
+                    heroHP -= goblinAttack;
+                    enemyStatus(goblinHealth, goblinWeapon, goblinName);
+                    System.out.printf("%nThe goblin damages you by %d!%n", goblinAttack);
+                    playerStatus(heroHP, heroWeapon, heroName);
+
+                }
+
+                // Begin run choice
+                else if (goblinEncounter.equalsIgnoreCase("r")) {
 
                     if (randomNum() > 5) {
                         System.out.println("You successfully ran away.");
@@ -107,24 +105,27 @@ public class Adventure {
                         playerStatus(heroHP, heroWeapon, heroName);
                     }
 
-                } else {
+                }
+                // User didn't enter valid choice
+                else {
                     System.out.println("Please enter a correct action!");
                 }
             } while (goblinHealth > 0 && heroHP > 0);
 
-            // IF GOBLIN WAS KILLED, DISPLAY MESSAGE
-            if (goblinHealth == 0) {
+
+            // Upon death, display message
+            if (goblinHealth <= 0) {
                 System.out.println("You defeated the goblin!");
             }
-            if (heroHP == 0) {
+            if (heroHP <= 0) {
                 System.out.println("Game Over! Adventure another day.");
             }
 
             // 2 ORC ENCOUNTER
-
             // PEPE BOSS BATTLE
+
         } else {
-            System.out.println("Adventure another day then.");
+            System.out.println("Another day then.");
         }
 
     }
@@ -167,16 +168,18 @@ public class Adventure {
 
     // WEAPON ATTACK VALUE
     public static int attackValue(String weapon) {
-        int axeRandom = (int) (Math.floor(Math.random() * 10)) + 1;
-        int unarmedRandom = (int) (Math.floor(Math.random() * 5)) + 1;
+        int attackValue = 0;
+        int randomEight = (int) (Math.floor(Math.random() * 8)) + 1;
+        int randomThree = (int) (Math.floor(Math.random() * 3)) + 1;
 
-        if (weapon.equals("sword")) {
-            return 5;
-        } else if (weapon.equals("axe")) {
-            return axeRandom;
+        if (weapon.contains("Sword")) {
+            attackValue = 5;
+        } else if (weapon.contains("Axe")) {
+            attackValue =  randomEight;
         } else {
-            return unarmedRandom;
+            attackValue = randomThree;
         }
+        return attackValue;
     }
 
     // ENEMY STATUS
