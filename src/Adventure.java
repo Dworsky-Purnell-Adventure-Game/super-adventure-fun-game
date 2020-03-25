@@ -4,17 +4,12 @@ public class Adventure {
     public static void main(String[] args) throws InterruptedException {
 
         Scanner s = new Scanner(System.in);
+
         // Hero Stats
         String heroName = "";
         int heroHP = 50;
         int heroPotions = 5; // 20 pts of health
         String heroWeapon = "";
-
-        // Goblin Stats
-        int goblinHealth = 10;
-        int goblinAttack = (int) Math.floor(Math.random() * 4) + 1;
-        String goblinWeapon = "Stick";
-        String goblinName = "Urzal the Scared";
 
 
         // START GAME
@@ -38,11 +33,23 @@ public class Adventure {
             System.out.printf("You found: %s%n%n%n%n", heroWeapon);
             Thread.sleep(2000);
 
-            // First Encounter
-            System.out.print("As you begin your journey you are ambushed by some small goblin creatures!\n");
-            heroHP = lowLevelBattle(heroHP, heroWeapon, heroName, goblinHealth, goblinWeapon, goblinName);
+            // LOW-LEVEL ENCOUNTER
+            System.out.print("As you begin your journey you are ambushed by some small goblin creature!\n");
+            heroHP = lowLevelBattle(heroHP, heroWeapon, heroName, 10, "Stick", "Urzal the Scared");
             Thread.sleep(2000);
+
+            // TIMER FOR AMBIANCE
+            System.out.print("\n.");
+            Thread.sleep(1500);
+            System.out.print(".");
+            Thread.sleep(1500);
+            System.out.print(".");
+            Thread.sleep(1500);
+
+
+            // BOSS-LEVEL ENCOUNTER
             System.out.print("\nHOW DARE YOU!\n");
+            Thread.sleep(1500);
             System.out.print("           ▗▖▌▌▌▌▙▗▖    ▗▗▗▄▗▖▖        \n" +
                     "         ▖▛▞▞▞▟▐▞▞▞▞▌▌▞▞▌▙▚▞▞▞▞▄       \n" +
                     "        ▞▞▞▞▟▐▐▐▐▐▞▞▞▞▛▟▐▐▐▐▞▞▞▞▄      \n" +
@@ -65,14 +72,12 @@ public class Adventure {
                     "▙▙▛▟▜▚▙▙▜▟▜▜▜▟▜▜▟▜▜▜▟▜▟▛▖              \n" +
                     "▙▚▛▙▛█▟▞█▞▛▛▙▜▜▚▛▛▛▙▜▚▙▛█▖             \n" +
                     "▙██▟█▟▟▟▙███▟███▟██▟██▟█▟▙  ");
+
             Thread.sleep(2000);
-            System.out.print("\nPrepare for a boss fight.\n");
+            System.out.println("\n\nPrepare for a boss fight.\n");
+            Thread.sleep(2000);
+
             bossFight(heroHP, heroWeapon, heroName, 100, "Mace of Justice", "Pepe the Nasty");
-
-
-            // 2 ORC ENCOUNTER
-            // PEPE BOSS BATTLE
-
         } else {
             System.out.println("Another day then.");
         }
@@ -89,10 +94,10 @@ public class Adventure {
         // Loop through fight until one of the fighter's HP is 0
         do {
             System.out.println("[A]ttack | [P]otion | [R]un");
-            String goblinEncounter = s.next();
+            String encounter = s.next();
 
             // Begin attack choice
-            if (goblinEncounter.equalsIgnoreCase("a")) {
+            if (encounter.equalsIgnoreCase("a")) {
 
                 int attackValue = attackValue(hWpn);
 
@@ -101,13 +106,13 @@ public class Adventure {
                 enemyStatus(eHP, eWpn, eName); // enemy status bar
 
                 hHP -= 3;
-                System.out.printf("%nThe goblin damages you by %d!%n", 8);
+                System.out.printf("%n%s damages you by %d!%n", eName, 8);
                 playerStatus(hHP, hWpn, hName); // player status bar
 
             }
 
             // Begin potion choice
-            else if (goblinEncounter.equalsIgnoreCase("p")) {
+            else if (encounter.equalsIgnoreCase("p")) {
                 if (hHP == 50) {
                     System.out.println("\nAlready at full health! It had no effect!");
                 } else {
@@ -126,13 +131,13 @@ public class Adventure {
 
                 hHP -= 3;
                 enemyStatus(eHP, eWpn, eName);
-                System.out.printf("%nThe goblin damages you by %d!%n", 3);
+                System.out.printf("%n%s damages you by %d!%n", eName, 3);
                 playerStatus(hHP, hWpn, hName);
 
             }
 
             // Begin run choice
-            else if (goblinEncounter.equalsIgnoreCase("r")) {
+            else if (encounter.equalsIgnoreCase("r")) {
 
                 if (randomNum() > 5) {
                     System.out.println("You successfully ran away, coward.");
@@ -141,7 +146,7 @@ public class Adventure {
                     System.out.println("\nCan't escape! You must fight or die!");
 
                     enemyStatus(eHP, eWpn, eName);
-                    System.out.printf("%nThe goblin damages you by %d!%n", 3);
+                    System.out.printf("%n%s damages you by %d!%n", eName, 3);
                     hHP -= 3;
                     playerStatus(hHP, hWpn, hName);
                 }
@@ -154,7 +159,7 @@ public class Adventure {
         } while (eHP > 0 && hHP > 0);
         // Upon death, display message
         if (eHP <= 0) {
-            System.out.println("You defeated the goblin!");
+            System.out.printf("%nYou defeated %s%n!", eName);
         }
         if (hHP <= 0) {
             System.out.println("Game Over! Adventure another day.");
@@ -317,7 +322,7 @@ public class Adventure {
         for (int i = 0; i <= hp; i++) {
             System.out.print("▒");
         }
-        System.out.print(" " + hp + "/50");
+        System.out.print(" " + hp);
         System.out.print("\n│ \u2694Weapon: " + wpn + "\n");
         System.out.print("└─────────────────────────────────────────────────────────────┘\n");
 
